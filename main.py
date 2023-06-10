@@ -1,29 +1,34 @@
 import usb_hid
-import time
 import board
 from digitalio import DigitalInOut, Direction, Pull
-
+import analogio
+import keys
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
 def main():
     # SETUP
     kbd = Keyboard(usb_hid.devices)
-    switch = DigitalInOut(board.GP0)
-    switch.direction = Direction.INPUT
-    switch.pull = Pull.DOWN
-
+    keylist = [keys.key(id=1, pin=board.GP28, keycode=Keycode.S),
+               keys.key(id=2, pin=board.GP27, keycode=Keycode.D)]
     # LOOP
-    # Testing with a digital switch
     while True:
-        if switch.value:
-            kbd.press(Keycode.A)
-        else:
-            kbd.release(Keycode.A)
-        # Release all keys.
-        #kbd.release_all()
+        for key in keylist:
+            key.poll()
+            key.calibrate()
+            key.rapid_trigger()
+            if key.curr_state:
+                if key.state_changed:
+                    kbd.press(key.keycode)
+                    #print("Press")
+                    pass
+            else:
+                if key.state_changed:
+                    kbd.release(key.keycode)
+                    #print("Release")
+                    pass
+            #key.fixed_actuation()
+
         pass
-
-
 if __name__ == "__main__":
     main()

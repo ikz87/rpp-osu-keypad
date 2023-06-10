@@ -1,1 +1,3 @@
-import main
+import supervisor
+
+supervisor.disable_autoreload()

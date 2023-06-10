@@ -5,13 +5,12 @@ import math
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
-class key():
+class Key():
     def __init__(self, id, pin, keycode):
         # Set up pin and id
         self.id = id
         self.pin = analogio.AnalogIn(pin)
         self.keycode = keycode
-
 
         # Used for calibration
         self.top_adc = 0
@@ -39,8 +38,9 @@ class key():
 
 
     def poll(self):
-        # Poll 200 times and average values
-        # This will make noise go away (kinda)
+        """
+        Poll 200 times and average values
+        """
         avgrange = 200
         avg = 0
         for _i in range(avgrange):
@@ -66,6 +66,9 @@ class key():
 
 
     def calibrate(self):
+        """
+        Calibrate key. Meant to be used repeatedly
+        """
         # Calibrate values
         if self.curr_adc > self.top_adc:
             self.top_adc = self.curr_adc
@@ -73,11 +76,13 @@ class key():
             self.bot_adc = self.curr_adc
         self.top_dist = self.adc_to_dist(self.top_adc)
         self.bot_dist = self.adc_to_dist(self.bot_adc)
-        #print(bot_dist, top_dist)
         pass
 
 
     def rapid_trigger(self):
+        """
+        Wooting's rapid trigger technology
+        """
         self.curr_dist = self.adc_to_dist(self.curr_adc)
         new_state = self.curr_state
 
@@ -104,6 +109,9 @@ class key():
 
 
     def fixed_actuation(self):
+        """
+        Standard keyboard implementation
+        """
         new_state = self.curr_state
         self.curr_dist = self.adc_to_dist(self.curr_adc)
 

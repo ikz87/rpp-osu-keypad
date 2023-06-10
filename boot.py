@@ -1,3 +1,5 @@
 import supervisor
+import main
 
-supervisor.disable_autoreload()
+supervisor.runtime.autoreload = False
+#main.main()

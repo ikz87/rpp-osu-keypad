@@ -93,7 +93,7 @@ class key():
         if self.hook < self.bot_dist + self.bot_deadzone:
             self.hook = self.bot_dist + self.bot_deadzone
         elif self.hook > self.top_dist - self.top_deadzone:
-            self.hook = self.bot_dist - self.top_deadzone
+            self.hook = self.top_dist - self.top_deadzone
 
         # Keep track of wether the state of the key has changed
         if new_state != self.curr_state:

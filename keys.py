@@ -13,10 +13,8 @@ class Key():
         self.keycode = keycode
 
         # Used for calibration
-        self.top_adc = 0
-        self.top_dist = 0
-        self.bot_adc = 100000
-        self.bot_dist = 100000
+        self.bot_adc = 0
+        self.top_adc = 100000
         self.travel_dist = 4
 
         # Value that's updated for key presses
@@ -26,8 +24,8 @@ class Key():
         # For rapid trigger
         self.sens = 0.3
         self.hook = 0
-        self.top_deadzone = 0.3
-        self.bot_deadzone = 1.0
+        self.top_deadzone = 1
+        self.bot_deadzone = 0.2
 
         # For fixed actuation
         self.actuation_point = 1.5
@@ -55,10 +53,14 @@ class Key():
         Gets distance in mm from an adc value
         """
         # Normalize
-        dist = (adc - self.bot_adc)/(self.top_adc - self.bot_adc)
+        dist = (adc - self.top_adc)/(self.bot_adc - self.top_adc)
 
         # Make the function linear
-        dist = math.sqrt(dist)
+        try:
+            dist = math.sqrt(dist)
+            #dist = math.sqrt(-((-dist+1)**2)+1)
+        except:
+            pass
 
         # Scale to travel distance 
         dist *= self.travel_dist
@@ -70,12 +72,15 @@ class Key():
         Calibrate key. Meant to be used repeatedly
         """
         # Calibrate values
-        if self.curr_adc > self.top_adc:
-            self.top_adc = self.curr_adc
-        elif self.curr_adc < self.bot_adc:
-            self.bot_adc = self.curr_adc
-        self.top_dist = self.adc_to_dist(self.top_adc)
-        self.bot_dist = self.adc_to_dist(self.bot_adc)
+        if self.curr_adc > self.bot_adc:
+            self.bot_adc = (self.bot_adc + self.curr_adc)/2
+        elif self.curr_adc < self.top_adc:
+            self.top_adc = (self.top_adc + self.curr_adc)/2
+
+        # Failsafe
+        if self.top_adc == self.bot_adc:
+            self.bot_adc += 0.1
+        #print(self.top_adc, self.bot_adc, self.curr_adc)
         pass
 
 
@@ -86,6 +91,13 @@ class Key():
         self.curr_dist = self.adc_to_dist(self.curr_adc)
         new_state = self.curr_state
 
+        # Keep current distance in a safe range
+        if self.curr_dist > self.travel_dist - self.bot_deadzone:
+            self.curr_dist = self.travel_dist
+        elif self.curr_dist < self.top_deadzone:
+            self.curr_dist = 0
+
+
         # Implement rapid trigger
         if self.curr_dist >=self.hook + self.sens:
             self.hook = self.curr_dist
@@ -93,12 +105,6 @@ class Key():
         elif self.curr_dist <=self.hook - self.sens:
             new_state = False
             self.hook = self.curr_dist
-
-        # Keep hook in a safe range
-        if self.hook < self.bot_dist + self.bot_deadzone:
-            self.hook = self.bot_dist + self.bot_deadzone
-        elif self.hook > self.top_dist - self.top_deadzone:
-            self.hook = self.top_dist - self.top_deadzone
 
         # Keep track of wether the state of the key has changed
         if new_state != self.curr_state:

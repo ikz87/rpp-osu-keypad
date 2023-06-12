@@ -7,13 +7,13 @@ from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
 class Key():
-    def __init__(self, id, adc, vcc, keycode):
+    def __init__(self, id, adc, vcc):
         # Set up pins and id
         self.id = id
         self.adc = analogio.AnalogIn(adc)
         self.vcc = DigitalInOut(vcc)
         self.vcc.direction = Direction.OUTPUT
-        self.keycode = keycode
+        self.actions = []
 
         # Used for calibration
         self.bot_adc = 0
@@ -25,10 +25,10 @@ class Key():
         self.curr_dist = 0
 
         # For rapid trigger
-        self.sens = 0.3
+        self.sensitivity = 0.3
         self.hook = 0
         self.top_deadzone = 1
-        self.bot_deadzone = 0.3
+        self.bottom_deadzone = 0.3
 
         # For fixed actuation
         self.actuation_point = 1.5
@@ -101,9 +101,9 @@ class Key():
         self.curr_dist = self.adc_to_dist(self.curr_adc)
 
         # Keep current distance and hook in a safe range
-        if self.curr_dist > self.travel_dist - self.bot_deadzone:
+        if self.curr_dist > self.travel_dist - self.bottom_deadzone:
             self.curr_dist = self.travel_dist
-            self.hook = self.travel_dist - self.bot_deadzone
+            self.hook = self.travel_dist - self.bottom_deadzone
             self.update_state(True)
             return
         elif self.curr_dist < self.top_deadzone:
@@ -113,11 +113,11 @@ class Key():
             return
 
         # Implement rapid trigger
-        if self.curr_dist >=self.hook + self.sens:
+        if self.curr_dist >=self.hook + self.sensitivity:
             self.hook = self.curr_dist
             self.update_state(True)
             return
-        elif self.curr_dist <=self.hook - self.sens:
+        elif self.curr_dist <=self.hook - self.sensitivity:
             self.hook = self.curr_dist
             self.update_state(False)
             return
@@ -147,3 +147,4 @@ class Key():
             self.state_changed = True
         else:
             self.state_changed = False
+

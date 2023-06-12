@@ -112,7 +112,6 @@ class Key():
             self.update_state(False)
             return
 
-
         # Implement rapid trigger
         if self.curr_dist >=self.hook + self.sens:
             self.hook = self.curr_dist
@@ -125,31 +124,26 @@ class Key():
         self.update_state(self.curr_state)
 
 
+    def fixed_actuation(self):
+        """
+        Standard keyboard implementation
+        """
+        self.curr_dist = self.adc_to_dist(self.curr_adc)
+
+        if self.curr_dist >=self.actuation_point:
+            self.update_state(True)
+        else:
+            self.update_state(False)
+        pass
+
+
     def update_state(self, state):
-        # Keep track of wether the state of the key has changed
+        """
+        Updates key state and keeps track of whether the
+        state of the key has changed or not
+        """
         if state != self.curr_state:
             self.curr_state = state
             self.state_changed = True
         else:
             self.state_changed = False
-
-
-    def fixed_actuation(self):
-        """
-        Standard keyboard implementation
-        """
-        new_state = self.curr_state
-        self.curr_dist = self.adc_to_dist(self.curr_adc)
-
-        if self.curr_dist >=self.actuation_point:
-            new_state = True
-        else:
-            new_state = False
-
-        # Keep track of wether the state of the key has changed
-        if new_state != self.curr_state:
-            self.curr_state = new_state
-            self.state_changed = True
-        else:
-            self.state_changed = False
-        pass

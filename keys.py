@@ -2,14 +2,17 @@ import analogio
 import usb_hid
 import board
 import math
+from digitalio import DigitalInOut, Direction, Pull
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
 class Key():
-    def __init__(self, id, pin, keycode):
-        # Set up pin and id
+    def __init__(self, id, adc, vcc, keycode):
+        # Set up pins and id
         self.id = id
-        self.pin = analogio.AnalogIn(pin)
+        self.adc = analogio.AnalogIn(adc)
+        self.vcc = DigitalInOut(vcc)
+        self.vcc.direction = Direction.OUTPUT
         self.keycode = keycode
 
         # Used for calibration
@@ -18,14 +21,14 @@ class Key():
         self.travel_dist = 4
 
         # Value that's updated for key presses
-        self.curr_adc = 0 # ADC
-        self.curr_dist = 0 # Distance
+        self.curr_adc = 0
+        self.curr_dist = 0
 
         # For rapid trigger
         self.sens = 0.3
         self.hook = 0
         self.top_deadzone = 1
-        self.bot_deadzone = 0.2
+        self.bot_deadzone = 0.3
 
         # For fixed actuation
         self.actuation_point = 1.5
@@ -39,10 +42,17 @@ class Key():
         """
         Poll 200 times and average values
         """
+        # Turn on vcc for polling
+        self.vcc.value = True
+
         avgrange = 200
         avg = 0
         for _i in range(avgrange):
-            avg += self.pin.value
+            avg += self.adc.value
+
+        # Turn off vcc after polling
+        self.vcc.value = False
+
         avg = avg/avgrange
         self.curr_adc = avg
         pass
@@ -53,7 +63,7 @@ class Key():
         Gets distance in mm from an adc value
         """
         # Normalize
-        dist = (adc - self.top_adc)/(self.bot_adc - self.top_adc)
+        dist = (adc + 0.1 - self.top_adc)/(self.bot_adc - self.top_adc)
 
         # Make the function linear
         try:
@@ -63,7 +73,7 @@ class Key():
             pass
 
         # Scale to travel distance 
-        dist *= self.travel_dist
+        dist = dist * self.travel_dist - 0.1
         return dist
 
 

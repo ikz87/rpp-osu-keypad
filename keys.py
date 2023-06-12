@@ -99,26 +99,36 @@ class Key():
         Wooting's rapid trigger technology
         """
         self.curr_dist = self.adc_to_dist(self.curr_adc)
-        new_state = self.curr_state
 
-        # Keep current distance in a safe range
+        # Keep current distance and hook in a safe range
         if self.curr_dist > self.travel_dist - self.bot_deadzone:
             self.curr_dist = self.travel_dist
+            self.hook = self.travel_dist - self.bot_deadzone
+            self.update_state(True)
+            return
         elif self.curr_dist < self.top_deadzone:
             self.curr_dist = 0
+            self.hook = self.top_deadzone
+            self.update_state(False)
+            return
 
 
         # Implement rapid trigger
         if self.curr_dist >=self.hook + self.sens:
             self.hook = self.curr_dist
-            new_state = True
+            self.update_state(True)
+            return
         elif self.curr_dist <=self.hook - self.sens:
-            new_state = False
             self.hook = self.curr_dist
+            self.update_state(False)
+            return
+        self.update_state(self.curr_state)
 
+
+    def update_state(self, state):
         # Keep track of wether the state of the key has changed
-        if new_state != self.curr_state:
-            self.curr_state = new_state
+        if state != self.curr_state:
+            self.curr_state = state
             self.state_changed = True
         else:
             self.state_changed = False

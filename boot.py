@@ -1,5 +1,5 @@
 import supervisor
-import main
+import storage
 
 supervisor.runtime.autoreload = False
-#main.main()
+#storage.remount("/", readonly=False)

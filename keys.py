@@ -16,7 +16,7 @@ class Key():
         self.actions = []
 
         # Used for calibration
-        self.bot_adc = 0
+        self.bottom_adc = 0
         self.top_adc = 100000
         self.travel_dist = 4
 
@@ -32,6 +32,7 @@ class Key():
 
         # For fixed actuation
         self.actuation_point = 1.5
+        self.actuation_reset = 0.3
 
         # State of the switch
         self.curr_state = False
@@ -63,7 +64,7 @@ class Key():
         Gets distance in mm from an adc value
         """
         # Normalize
-        dist = (adc + 0.1 - self.top_adc)/(self.bot_adc - self.top_adc)
+        dist = (adc + 0.1 - self.top_adc)/(self.bottom_adc - self.top_adc)
 
         # Make the function linear
         try:
@@ -82,15 +83,15 @@ class Key():
         Calibrate key. Meant to be used repeatedly
         """
         # Calibrate values
-        if self.curr_adc > self.bot_adc:
-            self.bot_adc = (self.bot_adc + self.curr_adc)/2
+        if self.curr_adc > self.bottom_adc:
+            self.bottom_adc = (self.bottom_adc + self.curr_adc)/2
         elif self.curr_adc < self.top_adc:
             self.top_adc = (self.top_adc + self.curr_adc)/2
 
         # Failsafe
-        if self.top_adc == self.bot_adc:
-            self.bot_adc += 0.1
-        #print(self.top_adc, self.bot_adc, self.curr_adc)
+        if self.top_adc == self.bottom_adc:
+            self.bottom_adc += 0.1
+        #print(self.top_adc, self.bottom_adc, self.curr_adc)
         pass
 
 
@@ -132,8 +133,11 @@ class Key():
 
         if self.curr_dist >=self.actuation_point:
             self.update_state(True)
-        else:
+            return
+        elif self.curr_dist < self.actuation_point - self.actuation_reset:
             self.update_state(False)
+            return
+        self.update_state(self.curr_state)
         pass
 
 

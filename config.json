@@ -2,12 +2,13 @@
     "general": {
         "rapid_trigger": true,
         "sensitivity": 0.3,
-        "top_deadzone": 1,
+        "top_deadzone": 0.3,
         "bottom_deadzone": 0.3,
-        "actuation_point": 3.5
+        "actuation_point": 2,
+        "actuation_reset": 0.3
     },
     "key_1": {
-        "0": "E"
+        "0": "S"
     },
     "key_2": {
         "0": "D"

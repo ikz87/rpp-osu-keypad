@@ -1,6 +1,6 @@
 import usb_hid
+import analogio
 import board
-import time
 import json
 import supervisor
 import os
@@ -12,9 +12,35 @@ from adafruit_hid.keycode import Keycode
 kbd = Keyboard(usb_hid.devices)
 
 # Keys in the keypad
-keylist = [Key(id="key_1",
-               adc=board.GP28,
-               vcc=board.GP0)]
+adc_list = [ analogio.AnalogIn(board.GP28) ]
+key_list = [Key(id="key_1",
+               adc=adc_list[0],
+               vcc=board.GP0),
+            Key(id="key_2",
+               adc=adc_list[0],
+               vcc=board.GP1),
+            Key(id="key_3",
+               adc=adc_list[0],
+               vcc=board.GP2),
+            Key(id="key_4",
+               adc=adc_list[0],
+               vcc=board.GP3),
+            Key(id="key_5",
+               adc=adc_list[0],
+               vcc=board.GP4),
+            Key(id="key_6",
+               adc=adc_list[0],
+               vcc=board.GP5),
+            Key(id="key_7",
+               adc=adc_list[0],
+               vcc=board.GP6),
+            Key(id="key_8",
+               adc=adc_list[0],
+               vcc=board.GP7),
+            Key(id="key_9",
+               adc=adc_list[0],
+               vcc=board.GP8)]
+
 
 def main():
     # SETUP
@@ -31,14 +57,21 @@ def main():
         calibrations = json.load(calibration_file)
 
     # Config keys
-    for key in keylist:
-        # Set actions and calibrations
-        key_configs = configs[key.id]
+    for key in key_list:
+        # Set calibrations
         key_calibrations = calibrations[key.id]
-        for i in range(len(key_configs)):
-            key.actions.append(getattr(Keycode, key_configs[str(i)]))
-            key.top_adc = key_calibrations["top_adc"]
-            key.bottom_adc = key_calibrations["bottom_adc"]
+        key.top_adc = key_calibrations["top_adc"]
+        key.bottom_adc = key_calibrations["bottom_adc"]
+
+        # Set actions
+        key_configs = configs[key.id]
+        total_actions = len(key_configs)
+        for i in range(total_actions):
+            action_keycodes = key_configs[str(i)].split(",")
+            keycode_list = []
+            for action_keycode in action_keycodes:
+                keycode_list.append(getattr(Keycode, action_keycode))
+            key.actions.append(keycode_list)
 
         # Set everything else
         key.sensitivity = general_configs["sensitivity"]
@@ -51,7 +84,7 @@ def main():
         # Check if config has changed, if so, reload
         if last_config_time != os.stat("config.json")[9]:
             supervisor.reload()
-        for key in keylist:
+        for key in key_list:
                 key.poll()
                 if general_configs["rapid_trigger"]:
                     key.rapid_trigger()
@@ -64,47 +97,18 @@ def main():
                         # send it once
                         if len(key.actions) > 1:
                             for keycode in key.actions:
-                                kbd.send(keycode)
+                                kbd.send(*keycode)
                         # If action is a single keycode
                         # press and hold
                         else:
-                            kbd.press(key.actions[0])
+                            kbd.press(*key.actions[0])
                         pass
                 else:
                     if key.state_changed:
-                        kbd.release(key.actions[0])
+                        kbd.release(*key.actions[0])
                         pass
         pass
 
-
-def calibrate():
-    """
-    Calibrate every key in the keylist
-    """
-    # Placeholder
-    calibrate = True
-    counter = 0
-    while calibrate:
-        for key in keylist:
-            key.poll()
-            key.calibrate()
-            time.sleep(0.001)
-        # Placeholder
-            print("calibrating", counter)
-        counter += 1
-        if counter > 1000:
-            print("calibration finished")
-            calibrate = False
-
-    # Log values
-    calibration_dict = {}
-    for key in keylist:
-        calibration_dict[key.id] = {}
-        calibration_dict[key.id]["top_adc"] = key.top_adc
-        calibration_dict[key.id]["bottom_adc"] = key.bottom_adc
-    print(calibration_dict)
-    with open("calibration_values.json", "w") as calibration_file:
-        json.dump(calibration_dict, calibration_file)
 
 if __name__ == "__main__":
     main()

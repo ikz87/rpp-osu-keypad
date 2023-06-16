@@ -1,16 +1,12 @@
-import analogio
-import usb_hid
-import board
 import math
 from digitalio import DigitalInOut, Direction, Pull
-from adafruit_hid.keyboard import Keyboard
-from adafruit_hid.keycode import Keycode
+
 
 class Key():
     def __init__(self, id, adc, vcc):
         # Set up pins and id
         self.id = id
-        self.adc = analogio.AnalogIn(adc)
+        self.adc = adc
         self.vcc = DigitalInOut(vcc)
         self.vcc.direction = Direction.OUTPUT
         self.actions = []
@@ -26,9 +22,9 @@ class Key():
 
         # For rapid trigger
         self.sensitivity = 0.3
-        self.hook = 0
         self.top_deadzone = 1
         self.bottom_deadzone = 0.3
+        self.hook = self.bottom_deadzone
 
         # For fixed actuation
         self.actuation_point = 1.5
@@ -41,12 +37,12 @@ class Key():
 
     def poll(self):
         """
-        Poll 200 times and average values
+        Poll 150 times and average values
         """
         # Turn on vcc for polling
         self.vcc.value = True
 
-        avgrange = 200
+        avgrange = 150
         avg = 0
         for _i in range(avgrange):
             avg += self.adc.value
@@ -64,17 +60,18 @@ class Key():
         Gets distance in mm from an adc value
         """
         # Normalize
-        dist = (adc + 0.1 - self.top_adc)/(self.bottom_adc - self.top_adc)
+        dist = (adc - self.top_adc)/(self.bottom_adc - self.top_adc)
 
         # Make the function linear
         try:
+            # 100% this doesn't work lmao, but it makes it better
             dist = math.sqrt(dist)
-            #dist = math.sqrt(-((-dist+1)**2)+1)
+            pass
         except:
             pass
 
         # Scale to travel distance 
-        dist = dist * self.travel_dist - 0.1
+        dist = dist * self.travel_dist
         return dist
 
 
@@ -91,7 +88,6 @@ class Key():
         # Failsafe
         if self.top_adc == self.bottom_adc:
             self.bottom_adc += 0.1
-        #print(self.top_adc, self.bottom_adc, self.curr_adc)
         pass
 
 
@@ -151,4 +147,3 @@ class Key():
             self.state_changed = True
         else:
             self.state_changed = False
-

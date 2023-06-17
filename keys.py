@@ -1,4 +1,6 @@
 import math
+import analogio
+import board
 from digitalio import DigitalInOut, Direction, Pull
 
 
@@ -150,3 +152,36 @@ class Key():
             self.state_changed = True
         else:
             self.state_changed = False
+
+
+
+# Keys in the keypad
+key_adc = analogio.AnalogIn(board.GP28)
+key_list = [Key(id="key_1",
+                adc=key_adc,
+                vcc=board.GP0),
+            Key(id="key_2",
+                adc=key_adc,
+                vcc=board.GP1),
+            Key(id="key_3",
+                adc=key_adc,
+                vcc=board.GP2),
+            Key(id="key_4",
+                adc=key_adc,
+                vcc=board.GP3),
+            Key(id="key_5",
+                adc=key_adc,
+                vcc=board.GP4),
+            Key(id="key_6",
+                adc=key_adc,
+                vcc=board.GP5),
+            Key(id="key_7",
+                adc=key_adc,
+                vcc=board.GP6),
+            Key(id="key_8",
+                adc=key_adc,
+                vcc=board.GP7),
+            Key(id="key_9",
+                adc=key_adc,
+                vcc=board.GP8)]
+

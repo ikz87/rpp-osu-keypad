@@ -1,45 +1,15 @@
 import usb_hid
-import analogio
 import board
 import json
 import supervisor
 import os
-from keys import Key
+import keys
+from microcontroller import cpu
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
 # HID keyboard
 kbd = Keyboard(usb_hid.devices)
-
-# Keys in the keypad
-adc_list = [ analogio.AnalogIn(board.GP28) ]
-key_list = [Key(id="key_1",
-               adc=adc_list[0],
-               vcc=board.GP0),
-            Key(id="key_2",
-               adc=adc_list[0],
-               vcc=board.GP1),
-            Key(id="key_3",
-               adc=adc_list[0],
-               vcc=board.GP2),
-            Key(id="key_4",
-               adc=adc_list[0],
-               vcc=board.GP3),
-            Key(id="key_5",
-               adc=adc_list[0],
-               vcc=board.GP4),
-            Key(id="key_6",
-               adc=adc_list[0],
-               vcc=board.GP5),
-            Key(id="key_7",
-               adc=adc_list[0],
-               vcc=board.GP6),
-            Key(id="key_8",
-               adc=adc_list[0],
-               vcc=board.GP7),
-            Key(id="key_9",
-               adc=adc_list[0],
-               vcc=board.GP8)]
 
 
 def main():
@@ -57,7 +27,7 @@ def main():
         calibrations = json.load(calibration_file)
 
     # Config keys
-    for key in key_list:
+    for key in keys.key_list:
         # Set calibrations
         key_calibrations = calibrations[key.id]
         key.top_adc = key_calibrations["top_adc"]
@@ -81,10 +51,11 @@ def main():
 
     # LOOP
     while True:
+        print(cpu.temperature)
         # Check if config has changed, if so, reload
         if last_config_time != os.stat("config.json")[9]:
             supervisor.reload()
-        for key in key_list:
+        for key in keys.key_list:
                 key.poll()
                 if general_configs["rapid_trigger"]:
                     key.rapid_trigger()

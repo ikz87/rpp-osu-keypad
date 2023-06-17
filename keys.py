@@ -24,7 +24,7 @@ class Key():
         self.sensitivity = 0.3
         self.top_deadzone = 1
         self.bottom_deadzone = 0.3
-        self.hook = self.bottom_deadzone
+        self.hook = self.travel_dist - self.bottom_deadzone
 
         # For fixed actuation
         self.actuation_point = 1.5
@@ -96,6 +96,9 @@ class Key():
         Wooting's rapid trigger technology
         """
         self.curr_dist = self.adc_to_dist(self.curr_adc)
+        if self.id == "key_9":
+            #print(self.curr_dist)
+            pass
 
         # Keep current distance and hook in a safe range
         if self.curr_dist > self.travel_dist - self.bottom_deadzone:

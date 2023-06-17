@@ -49,7 +49,6 @@ def calibrate():
         for key in key_list:
             key.poll()
             key.calibrate()
-            time.sleep(0.001)
 
     # Log values
     calibration_dict = {}

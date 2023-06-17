@@ -5,6 +5,7 @@ import analogio
 import keys
 from digitalio import DigitalInOut, Direction, Pull
 
+
 def calibrate():
     """
     Calibrate every key in the keys.key_list

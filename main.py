@@ -8,12 +8,12 @@ from microcontroller import cpu
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 
-# HID keyboard
-kbd = Keyboard(usb_hid.devices)
-
 
 def main():
     # SETUP
+    # HID keyboard
+    kbd = Keyboard(usb_hid.devices)
+
     # Load configurations
     last_config_time = os.stat("config.json")[9]
     configs = ""

@@ -154,7 +154,6 @@ class Key():
             self.state_changed = False
 
 
-
 # Keys in the keypad
 key_adc = analogio.AnalogIn(board.GP28)
 key_list = [Key(id="key_1",
@@ -184,4 +183,3 @@ key_list = [Key(id="key_1",
             Key(id="key_9",
                 adc=key_adc,
                 vcc=board.GP8)]
-

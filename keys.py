@@ -1,4 +1,3 @@
-import math
 import analogio
 import board
 from digitalio import DigitalInOut, Direction, Pull
@@ -67,7 +66,8 @@ class Key():
         # Make the function linear
         try:
             # 100% this doesn't work lmao, but it makes it better
-            dist = math.sqrt(dist)
+            # dist = math.sqrt(dist)
+            # Nvm, turns out it was already linear? idk anymore
             pass
         except:
             pass
@@ -98,9 +98,7 @@ class Key():
         Wooting's rapid trigger technology
         """
         self.curr_dist = self.adc_to_dist(self.curr_adc)
-        if self.id == "key_9":
-            #print(self.curr_dist)
-            pass
+        self.raw_dist = self.curr_dist
 
         # Keep current distance and hook in a safe range
         if self.curr_dist > self.travel_dist - self.bottom_deadzone:

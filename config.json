@@ -1,8 +1,8 @@
 {
     "general": {
         "rapid_trigger": true,
-        "sensitivity": 0.2,
-        "top_deadzone": 1,
+        "sensitivity": 0.1,
+        "top_deadzone": 0.3,
         "bottom_deadzone": 0.3,
         "actuation_point": 2,
         "actuation_reset": 0.3
@@ -11,22 +11,22 @@
         "0": "ESCAPE"
     },
     "key_2": {
-        "0": "LEFT_CONTROL,O"
+        "0": "CONTROL,O"
     },
     "key_3": {
         "0": "SPACE"
     },
     "key_4": {
-        "0": "F"
+        "0": "ALT"
     },
     "key_5": {
-        "0": "LEFT_CONTROL,LEFT_ALT,Z"
+        "0": "CONTROL,Z"
     },
     "key_6": {
-        "0": "LEFT_CONTROL,LEFT_ALT,X"
+        "0": "CONTROL,X"
     },
     "key_7": {
-        "0": "Q"
+        "0": "A"
     },
     "key_8": {
         "0": "S"

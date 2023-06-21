@@ -74,6 +74,9 @@ class Key():
 
         # Scale to travel distance 
         dist = dist * self.travel_dist
+
+        # Clamp for nicer values
+        dist = max(min(self.travel_dist,dist),0)
         return dist
 
 
@@ -98,16 +101,15 @@ class Key():
         Wooting's rapid trigger technology
         """
         self.curr_dist = self.adc_to_dist(self.curr_adc)
-        self.raw_dist = self.curr_dist
 
         # Keep current distance and hook in a safe range
         if self.curr_dist > self.travel_dist - self.bottom_deadzone:
-            self.curr_dist = self.travel_dist
+            #self.curr_dist = self.travel_dist
             self.hook = self.travel_dist - self.bottom_deadzone
             self.update_state(True)
             return
         elif self.curr_dist < self.top_deadzone:
-            self.curr_dist = 0
+            #self.curr_dist = 0
             self.hook = self.top_deadzone
             self.update_state(False)
             return
@@ -128,14 +130,18 @@ class Key():
         """
         Standard keyboard implementation
         """
+        last_dist = self.curr_dist
         self.curr_dist = self.adc_to_dist(self.curr_adc)
 
         if self.curr_dist >=self.actuation_point:
             self.update_state(True)
+            self.curr_dist = self.travel_dist
             return
         elif self.curr_dist < self.actuation_point - self.actuation_reset:
             self.update_state(False)
+            self.curr_dist = 0
             return
+        self.curr_dist = last_dist
         self.update_state(self.curr_state)
         pass
 

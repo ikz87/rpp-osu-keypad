@@ -50,8 +50,9 @@ def main():
         key.actuation_point = general_configs["actuation_point"]
 
     # LOOP
+    counter = 0
     while True:
-        print(cpu.temperature)
+        #print(cpu.temperature)
         # Check if config has changed, if so, reload
         if last_config_time != os.stat("config.json")[9]:
             supervisor.reload()
@@ -78,6 +79,11 @@ def main():
                     if key.state_changed:
                         kbd.release(*key.actions[0])
                         pass
+        #keyindex = 4
+        if counter % 2 == 0:
+            #print(keys.key_list[keyindex].curr_state, round(keys.key_list[keyindex].curr_dist,3))
+            pass
+        counter += 1
         pass
 
 

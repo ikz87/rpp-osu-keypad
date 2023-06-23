@@ -8,30 +8,30 @@
         "actuation_reset": 0.3
     },
     "key_1": {
-        "0": "ESCAPE"
+        "actions": [["ESCAPE"]]
     },
     "key_2": {
-        "0": "CONTROL,O"
+        "actions": [["CONTROL", "O"]]
     },
     "key_3": {
-        "0": "SPACE"
+        "actions": [["SPACE"]]
     },
     "key_4": {
-        "0": "ALT"
+        "actions": [["CONTROL", "ALT"]]
     },
     "key_5": {
-        "0": "CONTROL,Z"
+        "actions": [["Z"]]
     },
     "key_6": {
-        "0": "CONTROL,X"
+        "actions": [["X"]]
     },
     "key_7": {
-        "0": "A"
+        "actions": [["A"]]
     },
     "key_8": {
-        "0": "S"
+        "actions": [["S"]]
     },
     "key_9": {
-        "0": "D"
+        "actions": [["D"]]
     }
 }

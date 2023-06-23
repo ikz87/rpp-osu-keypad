@@ -38,12 +38,12 @@ class Key():
 
     def poll(self):
         """
-        Poll 150 times and average values
+        Poll 20 times and average values
         """
         # Turn on vcc for polling
         self.vcc.value = True
 
-        avgrange = 150
+        avgrange = 20
         avg = 0
         for _i in range(avgrange):
             avg += self.adc.value

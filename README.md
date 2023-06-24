@@ -9,3 +9,12 @@ Goal is to have:
 Name coined by [RaFaReAcH](https://osu.ppy.sh/users/10491903) from venezuela
 
 ![image](https://github.com/ikz87/kzooting-9KHE/assets/98569017/bd057d7d-f5b0-40aa-971f-64d03ce2806b)
+
+Thanks to lune for doing...
+
+*checks notes* 
+
+nothing in particular
+
+![image](https://github.com/ikz87/rpp-osu-keypad/assets/98569017/a968e7ce-0d53-4f56-9bd6-3117ff28d194)
+![image](https://github.com/ikz87/rpp-osu-keypad/assets/98569017/15f66f3a-a2b7-4c01-9b52-70809bfc0a25)

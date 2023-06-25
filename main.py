@@ -73,7 +73,7 @@ def main():
         # Read from serial port if data is available
         if usb_cdc.data.in_waiting:
             in_data = usb_cdc.data.readline().decode()
-            if in_data == "configs_request":
+            if in_data == "request_configs":
                 out_data = json.dumps(configs)
                 usb_cdc.data.write(out_data)
             else:

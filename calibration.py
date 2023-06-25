@@ -3,6 +3,7 @@ import time
 import board
 import analogio
 import keys
+import supervisor
 from digitalio import DigitalInOut, Direction, Pull
 
 
@@ -30,6 +31,9 @@ def calibrate():
     print(calibration_dict)
     with open("calibration_values.json", "w") as calibration_file:
         json.dump(calibration_dict, calibration_file)
+
+    # Start main once calibration is over
+    supervisor.set_next_code_file("main.py")
 
 
 if __name__ == "__main__":

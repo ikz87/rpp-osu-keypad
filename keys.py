@@ -5,7 +5,8 @@ from digitalio import DigitalInOut, Direction, Pull
 
 class Key():
     def __init__(self, id, adc, vcc):
-        # Set up pins and id
+        # Set up pins, id and evualuation method
+        self.rapid_trigger = True
         self.id = id
         self.adc = adc
         self.vcc = DigitalInOut(vcc)
@@ -96,7 +97,7 @@ class Key():
         pass
 
 
-    def rapid_trigger(self):
+    def evaluate_rapid_trigger(self):
         """
         Wooting's rapid trigger technology
         """
@@ -126,7 +127,7 @@ class Key():
         self.update_state(self.curr_state)
 
 
-    def fixed_actuation(self):
+    def evaluate_fixed_actuation(self):
         """
         Standard keyboard implementation
         """

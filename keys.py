@@ -39,12 +39,12 @@ class Key():
 
     def poll(self):
         """
-        Poll 20 times and average values
+        Poll 50 times and average values
         """
         # Turn on vcc for polling
         self.vcc.value = True
 
-        avgrange = 20
+        avgrange = 50
         avg = 0
         for _i in range(avgrange):
             avg += self.adc.value
@@ -131,18 +131,16 @@ class Key():
         """
         Standard keyboard implementation
         """
-        last_dist = self.curr_dist
         self.curr_dist = self.adc_to_dist(self.curr_adc)
 
         if self.curr_dist >=self.actuation_point:
             self.update_state(True)
-            self.curr_dist = self.travel_dist
+            #self.curr_dist = self.travel_dist
             return
         elif self.curr_dist < self.actuation_point - self.actuation_reset:
             self.update_state(False)
-            self.curr_dist = 0
+            #self.curr_dist = 0
             return
-        self.curr_dist = last_dist
         self.update_state(self.curr_state)
         pass
 

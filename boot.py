@@ -1,7 +1,11 @@
 import supervisor
 import storage
 import board
+import usb_cdc
 from digitalio import DigitalInOut, Direction, Pull
+
+# Enable a data serial port
+usb_cdc.enable(data=True)
 
 # Disable autoreloading jic
 supervisor.runtime.autoreload = False
@@ -19,6 +23,6 @@ calibration_button.pull = Pull.DOWN
 
 if calibration_button.value:
     storage.remount("/", readonly=False)
-    supervisor.set_next_code_file("calibration.py")
+    #supervisor.set_next_code_file("calibration.py")
 else:
     storage.remount("/", readonly=True)

@@ -34,6 +34,7 @@ def calibrate():
 
     # Start main once calibration is over
     supervisor.set_next_code_file("main.py")
+    supervisor.reload()
 
 
 if __name__ == "__main__":

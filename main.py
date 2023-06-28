@@ -3,6 +3,7 @@ import board
 import json
 import keys
 import usb_cdc
+import supervisor
 from microcontroller import cpu
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
@@ -69,29 +70,40 @@ def main():
         # Populate out dict
         pico_info[key.id] = {}
 
-    # Prepare temperature list
+    # Prepare some info lists
     temperatures = []
+    report_times = []
     smoothing_len = 20
     for _i in range(smoothing_len):
-        temperatures.append(0)
+        temperatures.append(1)
+        report_times.append(1)
 
     # LOOP
     counter = 0
     usb_cdc.data.flush()
+    last_report = supervisor.ticks_ms()
     while True:
+        # Get current report time
+        report_times.append(supervisor.ticks_ms() - last_report)
+        last_report = supervisor.ticks_ms()
+        report_times.pop(0)
+
         # Get current temperature
         temperatures.append(cpu.temperature)
         temperatures.pop(0)
 
-        # Average
-        avg = 0
-        for i in temperatures:
-            avg += i
-        avg /= smoothing_len
+        # Average stuff
+        report_times_avg = 0
+        temperatures_avg = 0
+        for i in range(smoothing_len):
+            report_times_avg += report_times[i]
+            temperatures_avg += temperatures[i]
+        report_times_avg /= smoothing_len
+        temperatures_avg /= smoothing_len
 
-        # Log smooth temperature
-        pico_info["temperature"] = avg
-        print(avg)
+        # Log smooth stuff
+        pico_info["temperature"] = temperatures_avg
+        pico_info["report_time"] = report_times_avg
 
         for key in keys.key_list:
             key.poll()

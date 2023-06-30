@@ -119,10 +119,12 @@ def main():
                     if len(key.actions) > 1:
                         for keycode in key.actions:
                             kbd.send(*keycode)
+                            print(keycode)
                     # If action is a single keycode list
                     # press and hold
                     else:
                         kbd.press(*key.actions[0])
+                        print(key.actions[0])
                         pass
             else:
                 if key.state_changed:
@@ -148,6 +150,7 @@ def main():
             else: # This is a new config json
                 # Set up keys again with the new info
                 configs = json.loads(in_data)
+                print(configs)
                 setup_keys(configs)
 
                 # Write to configuration file

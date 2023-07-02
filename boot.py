@@ -5,13 +5,18 @@ import usb_cdc
 from digitalio import DigitalInOut, Direction, Pull
 
 # Enable a data serial port
-# could set console=False if
-# no more changes are to be done
-# to the code. 
-usb_cdc.enable(data=True)
+# Should change console to False
+# if no more changes are to be made
+usb_cdc.enable(console=True, data=True)
 
 # Disable autoreloading jic
 supervisor.runtime.autoreload = False
+
+# Change volume name (in case it is gonna be mounted)
+new_name = "KZOOTING"
+storage.remount("/", readonly=False)
+m = storage.getmount("/")
+m.label = new_name
 
 # Calibration mode
 calibration_button = DigitalInOut(board.GP15)

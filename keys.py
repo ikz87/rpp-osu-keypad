@@ -37,14 +37,13 @@ class Key():
         self.state_changed = False
 
 
-    def poll(self):
+    def poll(self, avgrange):
         """
-        Poll 20 times and average values
+        Poll avgrange times and average values
         """
         # Turn on vcc for polling
         self.vcc.value = True
 
-        avgrange = 20
         avg = 0
         for _i in range(avgrange):
             avg += self.adc.value
@@ -158,7 +157,7 @@ class Key():
 
 
 # Keys in the keypad
-key_adc = analogio.AnalogIn(board.GP28)
+key_adc = analogio.AnalogIn(board.GP27)
 key_list = [Key(id="key_1",
                 adc=key_adc,
                 vcc=board.GP0),

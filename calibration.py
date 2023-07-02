@@ -19,7 +19,7 @@ def calibrate():
     # Calibrate keys while button is held
     while calibration_button.value:
         for key in keys.key_list:
-            key.poll()
+            key.poll(100)
             key.calibrate()
 
     # Log values
@@ -28,7 +28,6 @@ def calibrate():
         calibration_dict[key.id] = {}
         calibration_dict[key.id]["top_adc"] = key.top_adc
         calibration_dict[key.id]["bottom_adc"] = key.bottom_adc
-    print(calibration_dict)
     with open("calibration_values.json", "w") as calibration_file:
         json.dump(calibration_dict, calibration_file)
 

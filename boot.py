@@ -11,7 +11,7 @@ from digitalio import DigitalInOut, Direction, Pull
 usb_cdc.enable(console=True, data=True)
 
 # Only enable keyboard
-usb_hid.enable((usb_hid.Device.KEYBOARD), boot_device=1)
+usb_hid.enable((usb_hid.Device.KEYBOARD,))
 
 # Disable autoreloading jic
 supervisor.runtime.autoreload = False

@@ -1,5 +1,5 @@
 # THE KZOOTING PROJECT
-UNI project, inspired on [wooting keyboards](https://next.wooting.io/)
+UNI project for "machines and computers" and "measuring systems" courses, inspired on [wooting keyboards](https://next.wooting.io/)
 
 Goal is to have:
 1. Remapable capabilities via a TUI or GUI client ✔️
